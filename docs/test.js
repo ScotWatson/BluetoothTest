@@ -2664,6 +2664,7 @@ async function start( [ evtWindow ] ) {
     btnStart.addEventListener("click", function (evt) {
       // Open the bluetooth device chooser for the user. Promise resolves when user slects and pairs a device.
       const promiseDevice = navigator.bluetooth.requestDevice({
+        optionalServices: Array.from(mapServiceUUIDs.keys()),
         acceptAllDevices: true,
       });
       promiseDevice.then(main);

@@ -2660,13 +2660,16 @@ async function start( [ evtWindow ] ) {
     }
     const btnStart = document.createElement("button");
     document.body.appendChild(btnStart);
+    btnStart.appendChild(document.createTextNode("Click Here to Start"));
     btnStart.addEventListener("click", function (evt) {
-      main();
-    });
-    (async function main() {
-      const bluetooth = await navigator.bluetooth.requestDevice({
+      const promiseBluetooth = navigator.bluetooth.requestDevice({
         acceptAllDevices: true,
       });
+      (async function () {
+        main(await promiseBluetooth);
+      })();
+    });
+    (async function main(bluetooth) {
       document.body.appendChild(document.createTextNode(bluetooth.name));
       document.body.appendChild(document.createTextNode(bluetooth.id));
       const connectedBluetooth = await bluetooth.gatt.connect();

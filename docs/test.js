@@ -2678,20 +2678,80 @@ async function start( [ evtWindow ] ) {
         div.appendChild(document.createTextNode("Name: " + entry.name));
         div.appendChild(document.createTextNode("ID: " + entry.id));
         div.appendChild(document.createTextNode("isPrimary: " + service.isPrimary));
-        const characteristics = service.getCharacteristics(characteristicsUUID);
-        for (const characteristic of characteristics) {
-          const descriptors = characteristic.getDescriptors(descriptorUUID);
-          for (const descriptor of descriptors) {
-            descriptor.value;
-            await descriptor.readValue();
-            await descriptor.writeValue();
+        for (const characteristicUUID of mapCharacteristicUUIDs.keys()) {
+          const characteristics = service.getCharacteristics(characteristicsUUID);
+          for (const characteristic of characteristics) {
+            document.body.appendChild(await showCharacteristic(characteristic));
           }
-          characteristic.readValue();
-          characteristic.startNotifications();
-          characteristic.stopNotifications();
-          characteristic.writeValueWithoutResponse();
-          characteristic.writeValueWithResponse();
         }
+        return div;
+      }
+      async function showCharacteristic(characteristic) {
+        const div = document.createElement("div");
+        div.style.border = "1px solid black";
+        const entry = mapCharacteristicUUIDs.get(characteristic.uuid);
+        div.appendChild(document.createTextNode("Name: " + entry.name));
+        div.appendChild(document.createTextNode("ID: " + entry.id));
+        /*
+        const descriptors = characteristic.getDescriptors(descriptorUUID);
+        for (const descriptor of descriptors) {
+          descriptor.value;
+          await descriptor.readValue();
+          await descriptor.writeValue();
+        }
+        */
+        const btnReadValue = document.createElement("button");
+        div.appendChild(btnReadValue);
+        btnReadValue.appendChild(document.createTextNode("Read Value"));
+        const btnStartNotifications = document.createElement("button");
+        div.appendChild(btnStartNotifications);
+        btnStartNotifications.appendChild(document.createTextNode("Start Notifications"));
+        const btnStopNotifications = document.createElement("button");
+        div.appendChild(btnStopNotifications);
+        btnStopNotifications.appendChild(document.createTextNode("Stop Notifications"));
+        const btnWriteValueWithoutResponse = document.createElement("button");
+        div.appendChild(btnWriteValueWithoutResponse);
+        btnWriteValueWithoutResponse.appendChild(document.createTextNode("Write Value Without Response"));
+        const btnWriteValueWithRepsonse = document.createElement("button");
+        div.appendChild(btnWriteValueWithRepsonse);
+        btnWriteValueWithRepsonse.appendChild(document.createTextNode("Write Value With Repsonse"));
+        
+        btnReadValue.addEventListener("click", function (evt) {
+          characteristic.readValue();
+        });
+        btnStartNotifications.addEventListener("click", function (evt) {
+          characteristic.startNotifications();
+        });
+        btnStopNotifications.addEventListener("click", function (evt) {
+          characteristic.stopNotifications();
+        });
+        btnWriteValueWithResponse.addEventListener("click", function (evt) {
+          characteristic.writeValueWithoutResponse();
+        });
+        btnWriteValueWithoutResponse.addEventListener("click", function (evt) {
+          characteristic.writeValueWithResponse();
+        });
+        const properties = characteristic.properties;
+        const divAuthenticatedSignedWrites = document.createElement("div");
+        divAuthenticatedSignedWrites.style.backgroundColor = properties.authenticatedSignedWrites ? "green" : "red";
+        const divBroadcast = document.createElement("div");
+        divBroadcast.style.backgroundColor = properties.broadcast ? "green" : "red";
+        const divIndicate = document.createElement("div");
+        divBroadcast.style.backgroundColor = properties.indicate ? "green" : "red";
+        const divNotify = document.createElement("div");
+        divBroadcast.style.backgroundColor = properties.notify ? "green" : "red";
+        const divRead = document.createElement("div");
+        divBroadcast.style.backgroundColor = properties.read ? "green" : "red";
+        const divReliableWrite = document.createElement("div");
+        divBroadcast.style.backgroundColor = properties.reliableWrite ? "green" : "red";
+        const divWritableAuxiliaries = document.createElement("div");
+        divBroadcast.style.backgroundColor = properties.writableAuxiliaries ? "green" : "red";
+        const divWrite = document.createElement("div");
+        divBroadcast.style.backgroundColor = properties.write ? "green" : "red";
+        const divWriteWithoutResponse = document.createElement("div");
+        divBroadcast.style.backgroundColor = properties.writeWithoutResponse ? "green" : "red";
+        
+        return div;
       }
     })();
   } catch (e) {

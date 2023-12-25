@@ -2669,8 +2669,19 @@ async function start( [ evtWindow ] ) {
       promiseDevice.then(main);
     });
     async function main(bluetooth) {
-      document.body.appendChild(document.createTextNode(bluetooth.name));
-      document.body.appendChild(document.createTextNode(bluetooth.id));
+      const pName = document.createElement("p");
+      document.body.appendChild(pName);
+      pName.appendChild("Name: " + document.createTextNode(bluetooth.name));
+      const pId = document.createElement("p");
+      document.body.appendChild(pId);
+      pId.appendChild("ID: " + document.createTextNode(bluetooth.id));
+      let idBinary = "";
+      for (const byte of atob(bluetooth.id)) {
+        idBinary += ":" byte.charCodeAt(0).toString(16).padStart(2, "0");
+      }
+      const pIdBinary = document.createElement("p");
+      document.body.appendChild(pIdBinary);
+      pIdBinary.appendChild("ID (Binary): " + document.createTextNode(""));
       const connectedBluetooth = await bluetooth.gatt.connect();
       for (const serviceUUID of mapServiceUUIDs.keys()) {
         const services = await connectedBluetooth.getPrimaryServices(serviceUUID);

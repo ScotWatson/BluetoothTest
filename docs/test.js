@@ -2662,12 +2662,11 @@ async function start( [ evtWindow ] ) {
     document.body.appendChild(btnStart);
     btnStart.appendChild(document.createTextNode("Click Here to Start"));
     btnStart.addEventListener("click", function (evt) {
-      const promiseBluetooth = navigator.bluetooth.requestDevice({
+      // Open the bluetooth device chooser for the user. Promise resolves when user slects and pairs a device.
+      const promiseDevice = navigator.bluetooth.requestDevice({
         acceptAllDevices: true,
       });
-      (async function () {
-        main(await promiseBluetooth);
-      })();
+      promiseDevice.then(main);
     });
     (async function main(bluetooth) {
       document.body.appendChild(document.createTextNode(bluetooth.name));

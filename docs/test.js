@@ -1387,17 +1387,17 @@ const characteristicUUIDs = [
   {
     uuid: 0x2AE4,
     name: "Chromaticity Coordinates",
-    id: org.bluetooth.characteristic.chromaticity_coordinates,
+    id: "org.bluetooth.characteristic.chromaticity_coordinates",
   },
   {
     uuid: 0x2AE5,
     name: "Chromaticity in CCT and Duv Values",
-    id: org.bluetooth.characteristic.chromaticity_in_cct_and_duv_values,
+    id: "org.bluetooth.characteristic.chromaticity_in_cct_and_duv_values",
   },
   {
     uuid: 0x2AE6,
     name: "Chromaticity Tolerance",
-    id: org.bluetooth.characteristic.chromaticity_tolerance,
+    id: "org.bluetooth.characteristic.chromaticity_tolerance",
   },
   {
     uuid: 0x2AE7,
@@ -2658,7 +2658,12 @@ async function start( [ evtWindow ] ) {
     if (!(navigator.bluetooth.getAvailability())) {
       throw "Bluetooth not available";
     }
-    (async function () {
+    const btnStart = document.createElement("button");
+    document.body.appendChild(btnStart);
+    btnStart.addEventListener("click", function (evt) {
+      main();
+    });
+    (async function main() {
       const bluetooth = await navigator.bluetooth.requestDevice({
         acceptAllDevices: true,
       });

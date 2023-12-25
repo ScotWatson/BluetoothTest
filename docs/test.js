@@ -956,7 +956,7 @@ const characteristicUUIDs = [
   },
   {
     uuid: 0x2A8B,
-    name: "Five Zone Heart Rate Limits"
+    name: "Five Zone Heart Rate Limits",
     id: "org.bluetooth.characteristic.five_zone_heart_rate_limits",
   },
   {

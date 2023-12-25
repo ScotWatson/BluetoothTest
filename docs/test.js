@@ -2677,7 +2677,7 @@ async function start( [ evtWindow ] ) {
       pId.appendChild("ID: " + document.createTextNode(bluetooth.id));
       let idBinary = "";
       for (const byte of atob(bluetooth.id)) {
-        idBinary += ":" byte.charCodeAt(0).toString(16).padStart(2, "0");
+        idBinary += ":" + byte.charCodeAt(0).toString(16).padStart(2, "0");
       }
       const pIdBinary = document.createElement("p");
       document.body.appendChild(pIdBinary);

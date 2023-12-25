@@ -2668,7 +2668,7 @@ async function start( [ evtWindow ] ) {
       });
       promiseDevice.then(main);
     });
-    (async function main(bluetooth) {
+    async function main(bluetooth) {
       document.body.appendChild(document.createTextNode(bluetooth.name));
       document.body.appendChild(document.createTextNode(bluetooth.id));
       const connectedBluetooth = await bluetooth.gatt.connect();
@@ -2760,7 +2760,7 @@ async function start( [ evtWindow ] ) {
         
         return div;
       }
-    })();
+    }
   } catch (e) {
     console.log(e);
   }

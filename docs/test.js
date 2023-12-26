@@ -21,6 +21,56 @@ const asyncWindow = new Promise(function (resolve, reject) {
   }
 })();
 
+
+class UUID { // Per RFC 4122
+//   time_low               unsigned 32 bit integer   0-3    The low field of the timestamp
+//   time_mid               unsigned 16 bit integer   4-5    The middle field of the timestamp
+//   time_hi_and_version    unsigned 16 bit integer   6-7    The high field of the timestamp multiplexed with the version number
+//   clock_seq_hi_and_reserved  unsigned 8 bit integer   8      The high field of the clock sequence multiplexed with the variant
+//   clock_seq_low          unsigned 8 bit integer   9      The low field of the clock sequence
+//   node                   unsigned 48 bit integer  10-15  The spatially unique node identifier
+  #data;
+  constructor(args) {
+    this.#data = new ArrayBuffer(16);
+  }
+  static fromArrayBuffer() {
+    let view1 = new Uint8Array(args);
+    this.#data = new ArrayBuffer(16);
+    let view2 = new Uint8Array(this.#data);
+    view2.set(view1);
+  }
+  toArrayBuffer() {
+    let view1 = new Uint8Array(this.#data);
+    let ret = new ArrayBuffer(16);
+    let view2 = new Uint8Array(ret);
+    view2.set(view1);
+  }
+  toString() {
+    let ret = "";
+    let view = new Uint8Array(this.#data);
+    for (let i = 0; i < 4; ++i) {
+      ret += view[i].toString(16).padStart(2, "0");
+    }
+    ret += "-";
+    for (let i = 4; i < 6; ++i) {
+      ret += view[i].toString(16).padStart(2, "0");
+    }
+    ret += "-";
+    for (let i = 6; i < 8; ++i) {
+      ret += view[i].toString(16).padStart(2, "0");
+    }
+    ret += "-";
+    for (let i = 8; i < 10; ++i) {
+      ret += view[i].toString(16).padStart(2, "0");
+    }
+    ret += "-";
+    for (let i = 10; i < 16; ++i) {
+      ret += view[i].toString(16).padStart(2, "0");
+    }
+    return ret;
+  }
+}
+
 const serviceUUIDs = [ 
   {
     uuid: 0x1800,
@@ -2676,13 +2726,16 @@ async function start( [ evtWindow ] ) {
       const pId = document.createElement("p");
       document.body.appendChild(pId);
       pId.appendChild(document.createTextNode("ID: " + bluetooth.id));
-      let idBinary = "";
-      for (const byte of atob(bluetooth.id)) {
-        idBinary += ":" + byte.charCodeAt(0).toString(16).padStart(2, "0");
+      const idBinaryString = atob(bluetooth.id);
+      const idArrayBuffer = new ArrayBuffer(16);
+      const idView = new Uint8Array(idArrayBuffer);
+      for (let i = 0; i < 16; ++i) {
+        idView[i] += idBinaryString.charCodeAt(i);
       }
+      const idUUID = UUID.fromArrayBuffer(idArrayBuffer);
       const pIdBinary = document.createElement("p");
       document.body.appendChild(pIdBinary);
-      pIdBinary.appendChild(document.createTextNode("ID (Binary): " + idBinary));
+      pIdBinary.appendChild(document.createTextNode("ID (Binary): " + idUUID.toString()));
       const connectedBluetooth = await bluetooth.gatt.connect();
       for (const serviceUUID of mapServiceUUIDs.keys()) {
         console.log("serviceUUID: " + serviceUUID.toString(16));
@@ -2784,7 +2837,7 @@ async function start( [ evtWindow ] ) {
               let lineASCII = "";
               for (let i = 0; i < 16; ++i) {
                 const byte = dataViewValue.getUint8(16 * line + i);
-                lineHex += byte.toString(16).padStart("0", 2).toUpperCase() + " ";
+                lineHex += byte.toString(16).padStart(2, "0").toUpperCase() + " ";
                 if (byte >= 0x20 && byte <= 0x7F) {
                   lineASCII += String.fromCharCode(byte);
                 } else {
@@ -2799,7 +2852,7 @@ async function start( [ evtWindow ] ) {
               let lineASCII = "";
               for (let i = 0; i < numFinalBytes; ++i) {
                 const byte = dataViewValue.getUint8(16 * numFullLines + i);
-                lineHex += byte.toString(16).padStart("0", 2).toUpperCase() + " ";
+                lineHex += byte.toString(16).padStart(2, "0").toUpperCase() + " ";
                 if (byte >= 0x20 && byte <= 0x7F) {
                   lineASCII += String.fromCharCode(byte);
                 } else {

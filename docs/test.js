@@ -380,7 +380,7 @@ const characteristicUUIDs = [
     id: "org.bluetooth.characteristic.gap.device_name",
   },
   {
-    uuid: "0x2A01",
+    uuid: 0x2A01,
     name: "Appearance",
     id: "org.bluetooth.characteristic.gap.appearance",
   },

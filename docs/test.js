@@ -2775,17 +2775,40 @@ async function start( [ evtWindow ] ) {
               divPopup.remove();
             });
             const dataViewValue = await characteristic.readValue();
-            const numLines = Math.ceil(dataViewValue.byteLength / 16);
+            const numFullLines = Math.floor(dataViewValue.byteLength / 16);
             const pByteLength = document.createElement("p");
             divPopup.appendChild(pByteLength);
             pByteLength.appendChild(document.createTextNode("ByteLength: " + dataViewValue.byteLength));
-            for (let line = 0; line < numLines; ++line) {
+            for (let line = 0; line < numFullLines; ++line) {
               let lineHex = ""
               let lineASCII = "";
               for (let i = 0; i < 16; ++i) {
                 const byte = dataViewValue.getUint8(16 * line + i);
                 lineHex += byte.toString(16).padStart("0", 2).toUpperCase() + " ";
-                lineASCII += String.fromCharCode(byte);
+                if (byte >= 0x20 && byte <= 0x7F) {
+                  lineASCII += String.fromCharCode(byte);
+                } else {
+                  lineASCII += ".";
+                }
+              }
+              divPopup.appendChild(document.createTextNode(lineHex + lineASCII));
+            }
+            const numFinalBytes = dataViewValue.byteLength - (16 * numFullLines);
+            if (numFinalBytes > 0) {
+              let lineHex = ""
+              let lineASCII = "";
+              for (let i = 0; i < numFinalBytes; ++i) {
+                const byte = dataViewValue.getUint8(16 * numFullLines + i);
+                lineHex += byte.toString(16).padStart("0", 2).toUpperCase() + " ";
+                if (byte >= 0x20 && byte <= 0x7F) {
+                  lineASCII += String.fromCharCode(byte);
+                } else {
+                  lineASCII += ".";
+                }
+              }
+              for (let i = numFinalBytes; i < 16; ++i) {
+                lineHex += "   ";
+                lineASCII += " ";
               }
               divPopup.appendChild(document.createTextNode(lineHex + lineASCII));
             }

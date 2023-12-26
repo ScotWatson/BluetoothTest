@@ -2714,7 +2714,7 @@ async function start( [ evtWindow ] ) {
           try {
             const characteristics = await service.getCharacteristics(characteristicUUID);
             for (const characteristic of characteristics) {
-              document.body.appendChild(await showCharacteristic(characteristic, characteristicUUID));
+              div.appendChild(await showCharacteristic(characteristic, characteristicUUID));
             }
           } catch(e) {
             // no characteristics with this UUID; do nothing
@@ -2759,6 +2759,12 @@ async function start( [ evtWindow ] ) {
         
         btnReadValue.addEventListener("click", function (evt) {
           const divPopup = document.createElement("div");
+          divPopup.style.display = "block";
+          divPopup.style.position = "absolute";
+          divPopup.style.left = "10%";
+          divPopup.style.top = "10%";
+          divPopup.style.width = "80%";
+          divPopup.style.height = "80%";
           document.body.appendChild(divPopup);
           const btnClose = document.createElement("button");
           divPopup.appendChild(btnClose);
@@ -2767,6 +2773,8 @@ async function start( [ evtWindow ] ) {
             divPopup.remove();
           });
           const dataViewValue = characteristic.readValue();
+          console.log("dataViewValue");
+          console.log(dataViewValue);
           const numLines = Math.ceil(dataViewValue.byteLength / 16);
           const pByteLength = document.createElement("p");
           divPopup.appendChild(pByteLength);

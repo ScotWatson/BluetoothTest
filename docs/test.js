@@ -33,7 +33,7 @@ class UUID { // Per RFC 4122
   constructor(args) {
     this.#data = new ArrayBuffer(16);
   }
-  static fromArrayBuffer() {
+  static fromArrayBuffer(args) {
     let view1 = new Uint8Array(args);
     this.#data = new ArrayBuffer(16);
     let view2 = new Uint8Array(this.#data);

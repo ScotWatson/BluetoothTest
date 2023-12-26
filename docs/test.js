@@ -2686,9 +2686,14 @@ async function start( [ evtWindow ] ) {
       const connectedBluetooth = await bluetooth.gatt.connect();
       for (const serviceUUID of mapServiceUUIDs.keys()) {
         console.log("serviceUUID: " + serviceUUID.toString(16));
-        const services = await connectedBluetooth.getPrimaryServices(serviceUUID);
-        for (const service of services) {
-          document.body.appendChild(await showService(service, serviceUUID));
+        try {
+          const services = await connectedBluetooth.getPrimaryServices(serviceUUID);
+          for (const service of services) {
+            document.body.appendChild(await showService(service, serviceUUID));
+          }
+        } catch (e) {
+          // no services with this UUID; do nothing
+          console.log("No services with this UUID.");
         }
       }
       async function showService(service, serviceUUID) {
@@ -2700,9 +2705,14 @@ async function start( [ evtWindow ] ) {
         div.appendChild(document.createTextNode("isPrimary: " + service.isPrimary));
         for (const characteristicUUID of mapCharacteristicUUIDs.keys()) {
           console.log("characteristicUUID: " + characteristicUUID.toString(16));
-          const characteristics = await service.getCharacteristics(characteristicUUID);
-          for (const characteristic of characteristics) {
-            document.body.appendChild(await showCharacteristic(characteristic, characteristicUUID));
+          try {
+            const characteristics = await service.getCharacteristics(characteristicUUID);
+            for (const characteristic of characteristics) {
+              document.body.appendChild(await showCharacteristic(characteristic, characteristicUUID));
+            }
+          } catch(e) {
+            // no characteristics with this UUID; do nothing
+            console.log("No characteristic with this UUID.");
           }
         }
         return div;

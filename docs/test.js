@@ -37,7 +37,7 @@ class UUID { // Per RFC 4122
     let ret = new UUID();
     let view1 = new Uint8Array(args);
     ret.#data = new ArrayBuffer(16);
-    let view2 = new Uint8Array(this.#data);
+    let view2 = new Uint8Array(ret.#data);
     view2.set(view1);
     return ret;
   }

@@ -2733,9 +2733,9 @@ async function start( [ evtWindow ] ) {
         const btnWriteValueWithoutResponse = document.createElement("button");
         div.appendChild(btnWriteValueWithoutResponse);
         btnWriteValueWithoutResponse.appendChild(document.createTextNode("Write Value Without Response"));
-        const btnWriteValueWithRepsonse = document.createElement("button");
-        div.appendChild(btnWriteValueWithRepsonse);
-        btnWriteValueWithRepsonse.appendChild(document.createTextNode("Write Value With Repsonse"));
+        const btnWriteValueWithResponse = document.createElement("button");
+        div.appendChild(btnWriteValueWithResponse);
+        btnWriteValueWithResponse.appendChild(document.createTextNode("Write Value With Repsonse"));
         
         btnReadValue.addEventListener("click", function (evt) {
           characteristic.readValue();

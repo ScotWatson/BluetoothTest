@@ -34,10 +34,12 @@ class UUID { // Per RFC 4122
     this.#data = new ArrayBuffer(16);
   }
   static fromArrayBuffer(args) {
+    let ret = new UUID();
     let view1 = new Uint8Array(args);
-    this.#data = new ArrayBuffer(16);
+    ret.#data = new ArrayBuffer(16);
     let view2 = new Uint8Array(this.#data);
     view2.set(view1);
+    return ret;
   }
   toArrayBuffer() {
     let view1 = new Uint8Array(this.#data);

@@ -2758,37 +2758,38 @@ async function start( [ evtWindow ] ) {
         btnWriteValueWithResponse.appendChild(document.createTextNode("Write Value With Repsonse"));
         
         btnReadValue.addEventListener("click", function (evt) {
-          const divPopup = document.createElement("div");
-          divPopup.style.display = "block";
-          divPopup.style.position = "absolute";
-          divPopup.style.left = "10%";
-          divPopup.style.top = "10%";
-          divPopup.style.width = "80%";
-          divPopup.style.height = "80%";
-          document.body.appendChild(divPopup);
-          const btnClose = document.createElement("button");
-          divPopup.appendChild(btnClose);
-          btnClose.appendChild(document.createTextNode("Close"));
-          btnClose.addEventListener("click", function (evt) {
-            divPopup.remove();
-          });
-          const dataViewValue = characteristic.readValue();
-          console.log("dataViewValue");
-          console.log(dataViewValue);
-          const numLines = Math.ceil(dataViewValue.byteLength / 16);
-          const pByteLength = document.createElement("p");
-          divPopup.appendChild(pByteLength);
-          pByteLength.appendChild(document.createTextNode("ByteLength: " + dataViewValue.byteLength));
-          for (let line = 0; line < numLines; ++line) {
-            let lineHex = ""
-            let lineASCII = "";
-            for (let i = 0; i < 16; ++i) {
-              const byte = dataViewValue.getUint8(16 * line + i);
-              lineHex += byte.toString(16).padStart("0", 2).toUpperCase() + " ";
-              lineASCII += String.fromCharCode(byte);
+          (async function () {
+            const divPopup = document.createElement("div");
+            divPopup.style.display = "block";
+            divPopup.style.position = "absolute";
+            divPopup.style.left = "10%";
+            divPopup.style.top = "10%";
+            divPopup.style.width = "80%";
+            divPopup.style.height = "80%";
+            divPopup.style.backgroundColor = "white";
+            document.body.appendChild(divPopup);
+            const btnClose = document.createElement("button");
+            divPopup.appendChild(btnClose);
+            btnClose.appendChild(document.createTextNode("Close"));
+            btnClose.addEventListener("click", function (evt) {
+              divPopup.remove();
+            });
+            const dataViewValue = await characteristic.readValue();
+            const numLines = Math.ceil(dataViewValue.byteLength / 16);
+            const pByteLength = document.createElement("p");
+            divPopup.appendChild(pByteLength);
+            pByteLength.appendChild(document.createTextNode("ByteLength: " + dataViewValue.byteLength));
+            for (let line = 0; line < numLines; ++line) {
+              let lineHex = ""
+              let lineASCII = "";
+              for (let i = 0; i < 16; ++i) {
+                const byte = dataViewValue.getUint8(16 * line + i);
+                lineHex += byte.toString(16).padStart("0", 2).toUpperCase() + " ";
+                lineASCII += String.fromCharCode(byte);
+              }
+              divPopup.appendChild(document.createTextNode(lineHex + lineASCII));
             }
-            divPopup.appendChild(document.createTextNode(lineHex + lineASCII));
-          }
+          })();
         });
         btnStartNotifications.addEventListener("click", function (evt) {
           characteristic.startNotifications();

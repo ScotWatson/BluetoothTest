@@ -2685,30 +2685,32 @@ async function start( [ evtWindow ] ) {
       pIdBinary.appendChild(document.createTextNode("ID (Binary): " + idBinary));
       const connectedBluetooth = await bluetooth.gatt.connect();
       for (const serviceUUID of mapServiceUUIDs.keys()) {
+        console.log("serviceUUID: " + serviceUUID.toString(16));
         const services = await connectedBluetooth.getPrimaryServices(serviceUUID);
         for (const service of services) {
-          document.body.appendChild(await showService(service));
+          document.body.appendChild(await showService(service, serviceUUID));
         }
       }
-      async function showService(service) {
+      async function showService(service, serviceUUID) {
         const div = document.createElement("div");
         div.style.border = "1px solid black";
-        const entry = mapServiceUUIDs.get(service.uuid);
+        const entry = mapServiceUUIDs.get(serviceUUID);
         div.appendChild(document.createTextNode("Name: " + entry.name));
         div.appendChild(document.createTextNode("ID: " + entry.id));
         div.appendChild(document.createTextNode("isPrimary: " + service.isPrimary));
         for (const characteristicUUID of mapCharacteristicUUIDs.keys()) {
-          const characteristics = service.getCharacteristics(characteristicsUUID);
+          console.log("characteristicUUID: " + characteristicUUID.toString(16));
+          const characteristics = service.getCharacteristics(characteristicUUID);
           for (const characteristic of characteristics) {
-            document.body.appendChild(await showCharacteristic(characteristic));
+            document.body.appendChild(await showCharacteristic(characteristic, characteristicUUID));
           }
         }
         return div;
       }
-      async function showCharacteristic(characteristic) {
+      async function showCharacteristic(characteristic, characteristicUUID) {
         const div = document.createElement("div");
         div.style.border = "1px solid black";
-        const entry = mapCharacteristicUUIDs.get(characteristic.uuid);
+        const entry = mapCharacteristicUUIDs.get(characteristicUUID);
         div.appendChild(document.createTextNode("Name: " + entry.name));
         div.appendChild(document.createTextNode("ID: " + entry.id));
         /*

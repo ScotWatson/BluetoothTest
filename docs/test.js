@@ -2746,10 +2746,10 @@ async function start( [ evtWindow ] ) {
         btnStopNotifications.addEventListener("click", function (evt) {
           characteristic.stopNotifications();
         });
-        btnWriteValueWithResponse.addEventListener("click", function (evt) {
+        btnWriteValueWithoutResponse.addEventListener("click", function (evt) {
           characteristic.writeValueWithoutResponse();
         });
-        btnWriteValueWithoutResponse.addEventListener("click", function (evt) {
+        btnWriteValueWithResponse.addEventListener("click", function (evt) {
           characteristic.writeValueWithResponse();
         });
         const properties = characteristic.properties;

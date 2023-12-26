@@ -2687,6 +2687,7 @@ async function start( [ evtWindow ] ) {
       for (const serviceUUID of mapServiceUUIDs.keys()) {
         console.log("serviceUUID: " + serviceUUID.toString(16));
         const services = await connectedBluetooth.getPrimaryServices(serviceUUID);
+        console.log(services);
         for (const service of services) {
           document.body.appendChild(await showService(service, serviceUUID));
         }
@@ -2701,6 +2702,7 @@ async function start( [ evtWindow ] ) {
         for (const characteristicUUID of mapCharacteristicUUIDs.keys()) {
           console.log("characteristicUUID: " + characteristicUUID.toString(16));
           const characteristics = service.getCharacteristics(characteristicUUID);
+          console.log(characteristics);
           for (const characteristic of characteristics) {
             document.body.appendChild(await showCharacteristic(characteristic, characteristicUUID));
           }

@@ -2700,9 +2700,15 @@ async function start( [ evtWindow ] ) {
         const div = document.createElement("div");
         div.style.border = "1px solid black";
         const entry = mapServiceUUIDs.get(serviceUUID);
-        div.appendChild(document.createTextNode("Name: " + entry.name));
-        div.appendChild(document.createTextNode("ID: " + entry.id));
-        div.appendChild(document.createTextNode("isPrimary: " + service.isPrimary));
+        const pName = document.createElement("p");
+        div.appendChild(pName);
+        pName.appendChild(document.createTextNode("Name: " + entry.name));
+        const pId = document.createElement("p");
+        div.appendChild(pId);
+        pId.appendChild(document.createTextNode("ID: " + entry.id));
+        const pIsPrimary = document.createElement("p");
+        div.appendChild(pIsPrimary);
+        pIsPrimary.appendChild(document.createTextNode("isPrimary: " + service.isPrimary));
         for (const characteristicUUID of mapCharacteristicUUIDs.keys()) {
           console.log("characteristicUUID: " + characteristicUUID.toString(16));
           try {
@@ -2721,8 +2727,12 @@ async function start( [ evtWindow ] ) {
         const div = document.createElement("div");
         div.style.border = "1px solid black";
         const entry = mapCharacteristicUUIDs.get(characteristicUUID);
-        div.appendChild(document.createTextNode("Name: " + entry.name));
-        div.appendChild(document.createTextNode("ID: " + entry.id));
+        const pName = document.createElement("p");
+        div.appendChild(pName);
+        pName.appendChild(document.createTextNode("Name: " + entry.name));
+        const pId = document.createElement("p");
+        div.appendChild(pId);
+        pId.appendChild(document.createTextNode("ID: " + entry.id));
         /*
         const descriptors = characteristic.getDescriptors(descriptorUUID);
         for (const descriptor of descriptors) {
@@ -2748,7 +2758,29 @@ async function start( [ evtWindow ] ) {
         btnWriteValueWithResponse.appendChild(document.createTextNode("Write Value With Repsonse"));
         
         btnReadValue.addEventListener("click", function (evt) {
-          characteristic.readValue();
+          const divPopup = document.createElement("div");
+          document.body.appendChild(divPopup);
+          const btnClose = document.createElement("button");
+          divPopup.appendChild(btnClose);
+          btnClose.appendChild(document.createTextNode("Close"));
+          btnClose.addEventListener("click", function (evt) {
+            divPopup.remove();
+          });
+          const dataViewValue = characteristic.readValue();
+          const numLines = Math.ceil(dataViewValue.byteLength / 16);
+          const pByteLength = document.createElement("p");
+          divPopup.appendChild(pByteLength);
+          pByteLength.appendChild(document.createTextNode("ByteLength: " + dataViewValue.byteLength));
+          for (let line = 0; line < numLines; ++line) {
+            let lineHex = ""
+            let lineASCII = "";
+            for (let i = 0; i < 16; ++i) {
+              const byte = dataViewValue.getUint8(16 * line + i);
+              lineHex += byte.toString(16).padStart("0", 2).toUpperCase() + " ";
+              lineASCII += String.fromCharCode(byte);
+            }
+            divPopup.appendChild(document.createTextNode(lineHex + lineASCII));
+          }
         });
         btnStartNotifications.addEventListener("click", function (evt) {
           characteristic.startNotifications();
